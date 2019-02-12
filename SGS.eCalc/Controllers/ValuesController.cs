@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SGS.eCalc.Data;
@@ -9,6 +10,7 @@ using SGS.eCalc.Models;
 
 namespace SGS.eCalc.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ValuesController : ControllerBase
@@ -29,7 +31,7 @@ namespace SGS.eCalc.API.Controllers
             return  Ok( await _context.CalculationVersions.ToListAsync());
         }
 
-        // GET api/values/5
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -12,7 +14,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using SGS.eCalc.Data;
+using SGS.eCalc.Repository;
 
 namespace SGS.eCalc.API
 {
@@ -31,7 +35,15 @@ namespace SGS.eCalc.API
             services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("SGS.eCalc.DevDB")));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddCors();
-           
+            services.AddScoped<IAuthRepository,AuthRepository>();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(Options => {
+                Options.TokenValidationParameters = new TokenValidationParameters(){
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:token").Value)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false 
+                };
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,6 +61,7 @@ namespace SGS.eCalc.API
 
             // app.UseHttpsRedirection();
             app.UseCors(x =>x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+            app.UseAuthentication();
             app.UseMvc();
         }
         

@@ -7,5 +7,6 @@ namespace SGS.eCalc.Data
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options){}
         public DbSet<CalculationVersion> CalculationVersions { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }
