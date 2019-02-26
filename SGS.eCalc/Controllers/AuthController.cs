@@ -40,33 +40,38 @@ namespace SGS.eCalc.Controllers
         }
          [HttpPost("login")]
         public async Task<IActionResult> Login(UserLoginDTO userLoginDTO){
-            
-            var userFromRepository = await _authRepository.Login(userLoginDTO.UserName.ToLower(),userLoginDTO.Password);
-            if(userFromRepository == null)
-                return Unauthorized();
-            
-            var claims = new []{
-                new Claim(ClaimTypes.NameIdentifier, userFromRepository.Id.ToString()),
-                new Claim(ClaimTypes.Name, userFromRepository.UserName)
+            try{
+                  var userFromRepository = await _authRepository.Login(userLoginDTO.UserName.ToLower(),userLoginDTO.Password);
+                if(userFromRepository == null)
+                    return Unauthorized();
                 
-            };
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
+                var claims = new []{
+                    new Claim(ClaimTypes.NameIdentifier, userFromRepository.Id.ToString()),
+                    new Claim(ClaimTypes.Name, userFromRepository.UserName)
+                    
+                };
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.GetSection("AppSettings:Token").Value));
 
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-            
-            var tokenDescriptor = new SecurityTokenDescriptor{
+                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+                
+                var tokenDescriptor = new SecurityTokenDescriptor{
 
-                Subject             = new ClaimsIdentity(claims),
-                Expires             = DateTime.Now.AddDays(1),
-                SigningCredentials  = creds
-            };
+                    Subject             = new ClaimsIdentity(claims),
+                    Expires             = DateTime.Now.AddDays(1),
+                    SigningCredentials  = creds
+                };
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var token = tokenHandler.CreateToken(tokenDescriptor);
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            return Ok (new {
-                Token = tokenHandler.WriteToken(token)
-            });
+                return Ok (new {
+                    Token = tokenHandler.WriteToken(token)
+                });
+            }
+            catch{
+                throw new Exception("Not possibale to login");
+            }
+          
         }
     }
 }

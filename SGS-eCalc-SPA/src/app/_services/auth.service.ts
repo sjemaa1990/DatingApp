@@ -1,6 +1,7 @@
 import { Injectable, Pipe } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs//operators';
+import { map, catchError } from 'rxjs//operators';
+
 
 @Injectable({
   providedIn: 'root'
@@ -21,11 +22,10 @@ constructor(private http: HttpClient) { }
 
 
           } )
-
       );
   }
 
-  register(model: any){
+  register(model: any) {
     return this.http.post(this.baseUrl + 'register', model);
   }
 

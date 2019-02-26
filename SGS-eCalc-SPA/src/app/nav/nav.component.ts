@@ -19,7 +19,7 @@ export class NavComponent implements OnInit {
       console.log('Logged successfully');
     // tslint:disable-next-line:no-shadowed-variable
     }, error => {
-      console.log('failed to login');
+      console.log(error);
     });
   }
 
@@ -27,7 +27,7 @@ export class NavComponent implements OnInit {
     const token = localStorage.getItem('token');
     return !! token;
   }
-  logout(){
+  logout() {
     localStorage.removeItem('token');
     console.log('logged out');
   }
