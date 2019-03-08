@@ -3,6 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -39,8 +40,9 @@ namespace SGS.eCalc.Controllers
             return StatusCode(201);
         }
          [HttpPost("login")]
+         [AllowAnonymous]
         public async Task<IActionResult> Login(UserLoginDTO userLoginDTO){
-            try{
+            
                   var userFromRepository = await _authRepository.Login(userLoginDTO.UserName.ToLower(),userLoginDTO.Password);
                 if(userFromRepository == null)
                     return Unauthorized();
@@ -67,11 +69,7 @@ namespace SGS.eCalc.Controllers
                 return Ok (new {
                     Token = tokenHandler.WriteToken(token)
                 });
-            }
-            catch{
-                throw new Exception("Not possibale to login");
-            }
-          
+           
         }
     }
 }
