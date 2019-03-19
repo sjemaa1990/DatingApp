@@ -1,7 +1,7 @@
 export interface Photo {
 
     id: number;
-    utl: string;
+    url: string;
     description: string;
     dateAdded: Date;
     isMain: Boolean;
