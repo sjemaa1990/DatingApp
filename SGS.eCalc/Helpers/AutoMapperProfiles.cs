@@ -25,6 +25,8 @@ namespace SGS.eCalc.Helpers
                 option.ResolveUsing(d => d.DateOfBirth.CalculateAge());
             });
             CreateMap<Photo, PhotosForDetailedDto>();
+
+            CreateMap<UserForUpdateDto,User>();
         }
     }
 }

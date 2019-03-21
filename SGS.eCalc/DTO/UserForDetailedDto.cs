@@ -14,7 +14,7 @@ namespace SGS.eCalc.DTO
         public int Age { get; set; }
         public DateTime Created { get; set; }
         public DateTime LastActive { get; set; }
-        public string Intruduction { get; set; }
+        public string introduction { get; set; }
         public string LookingFor { get; set; }
         public string Interests { get; set; }
         public string City { get; set; }
