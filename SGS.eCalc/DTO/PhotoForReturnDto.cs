@@ -13,5 +13,7 @@ namespace SGS.eCalc.DTO
         public DateTime AddedDate { get; set; }
         public bool IsMain { get; set; }
 
+        public string PublicId { get; set; }
+
     }
 }

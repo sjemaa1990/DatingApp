@@ -16,7 +16,7 @@ namespace SGS.eCalc.Repository
         }
         public async Task<User> Login(string username, string password)
         {
-            var currentUser = await _context.Users.FirstOrDefaultAsync(u => u.UserName == username);
+            var currentUser = await _context.Users.Include(p => p.Photos).FirstOrDefaultAsync(u => u.UserName == username);
             if (currentUser == null) return null;
 
             if(!VerifyPasswordHash(password,currentUser.PasswordHash,currentUser.PasswordSalt ))
