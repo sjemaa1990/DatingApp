@@ -36,13 +36,13 @@ namespace SGS.eCalc.Controllers
             if (await _authRepository.UserExists(userForRegister.UserName))
                 return BadRequest("User already exist");
 
-            var userToCreate = new User()
-            {
-                UserName = userForRegister.UserName
-            };
-            var createdUser = await _authRepository.Register(userToCreate, userForRegister.Password);
+            var userToCreate = _mapper.Map<User>(userForRegister);
 
-            return StatusCode(201);
+            var createdUser = await _authRepository.Register(userToCreate, userForRegister.Password);
+            var userToReturn = _mapper.Map<UserForDetailedDto>(createdUser);
+
+            // Name of route
+            return CreatedAtRoute("GetUser", new {Controller = "Users", id=createdUser.Id}, userToReturn);
         }
         [HttpPost("login")]
         [AllowAnonymous]

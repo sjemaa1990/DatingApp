@@ -28,7 +28,8 @@ namespace SGS.eCalc.Helpers
 
             CreateMap<UserForUpdateDto,User>();
             CreateMap<Photo,PhotoForReturnDto>();
-             CreateMap<PhotoForCreationDto,Photo>();
+            CreateMap<PhotoForCreationDto,Photo>();
+            CreateMap<UserRegisterDTO,User>();
         }
     }
 }
