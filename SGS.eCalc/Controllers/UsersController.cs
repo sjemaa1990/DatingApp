@@ -6,10 +6,12 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SGS.eCalc.DTO;
+using SGS.eCalc.Helpers;
 using SGS.eCalc.Repository;
 
 namespace SGS.eCalc.Controllers
 {
+    [ServiceFilter(typeof(LogUserActivity))]
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
@@ -30,7 +32,7 @@ namespace SGS.eCalc.Controllers
             return Ok(_mapper.Map<IEnumerable<UserForListDTO>>(await _datingRepository.GetUsers()));
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name ="GetUser")]
         public async Task<IActionResult> GetUser(int id)
         {
             return Ok( _mapper.Map<UserForDetailedDto>(await _datingRepository.GetUser(id)));
