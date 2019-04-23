@@ -26,10 +26,24 @@ namespace SGS.eCalc.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetUsers([FromQuery]UserParams userParams)
         {
+            var connectUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            
+            var connectedUserFromRepo = await _datingRepository.GetUser(connectUserId);
+            userParams.UserId = connectUserId;
+            
+            if(string.IsNullOrEmpty(userParams.Gender)){
+                    userParams.Gender = connectedUserFromRepo.Gender == "male" ? "female" : "male";
+            }
+
+            var users = await _datingRepository.GetUsers(userParams);
+
+            
+            var result =_mapper.Map<IEnumerable<UserForListDTO>>(users);
+            Response.AddPagination(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages);
             // Does not affect performance using async 
-            return Ok(_mapper.Map<IEnumerable<UserForListDTO>>(await _datingRepository.GetUsers()));
+            return Ok(result);
         }
 
         [HttpGet("{id}", Name ="GetUser")]
