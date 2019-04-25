@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SGS.eCalc.DTO;
 using SGS.eCalc.Helpers;
+using SGS.eCalc.Models;
 using SGS.eCalc.Repository;
 
 namespace SGS.eCalc.Controllers
@@ -64,6 +65,28 @@ namespace SGS.eCalc.Controllers
                 return NoContent();
             throw new Exception($"Updating user {id} failed on save");
 
+        }
+        [HttpPost("{id}/like/{recipientId}")]
+        public async Task<IActionResult> LikeUser(int id, int recipientId)
+        {
+            if(id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+                return Unauthorized();
+            var like = await _datingRepository.GetLike(id,recipientId);
+            if(like != null){
+                return BadRequest("You already liked this user");
+            }
+            if(await _datingRepository.GetUser(recipientId) == null){
+                return NotFound();
+            }
+            like = new Models.Like(){
+                LikerId = id,
+                LikeeId = recipientId
+
+            };
+            _datingRepository.Add<Like>(like);
+            if(await _datingRepository.SaveAll())
+                return Ok();
+                return BadRequest("Failed to like user");
         }
 
         // POST api/values
