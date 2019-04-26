@@ -26,7 +26,6 @@ likesParam: string;
     this.likesParam = 'likers';
   }
   loadUsers() {
-    debugger;
     this.userService.getUsers(this.pagination.currentPage, this.pagination.itemsPerPage, null, this.likesParam)
     .subscribe((res: PaginatedResult<User[]>) => {
       this.users = res.result;

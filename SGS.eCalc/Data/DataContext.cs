@@ -10,6 +10,7 @@ namespace SGS.eCalc.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Photo> Photos { get; set; }
         public DbSet<Like> Likes { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -26,6 +27,15 @@ namespace SGS.eCalc.Data
                                   .HasForeignKey( u => u.LikerId)
                                   .OnDelete(DeleteBehavior.Restrict); // restrict to avoid the delete of user profile, delete only like ligne
 
+            builder.Entity<Message>()
+                                .HasOne(u => u.Sender)
+                                .WithMany(u => u.MessagesSent)
+                                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Message>()
+                    .HasOne(u => u.Recipient)
+                    .WithMany(u => u.MessagesReceived)
+                    .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

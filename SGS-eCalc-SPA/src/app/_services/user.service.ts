@@ -36,7 +36,7 @@ constructor(private http: HttpClient) { }
       params = params.append('gender', userParams.gender);
       params = params.append('orderBy', userParams.orderBy);
     }
-    debugger;
+
     if (LikesParams === 'Likers' ) {
       params = params.append('Likers', 'true');
     }
