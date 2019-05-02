@@ -91,7 +91,8 @@ export function tokenGetter() {
     MemberDetailResolver,
     MemberListResolver,
     MemberEditResolver,
-    ListsResolver
+    ListsResolver,
+    MessagesResolver
   ],
   bootstrap: [AppComponent]
 })
