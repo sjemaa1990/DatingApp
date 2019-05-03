@@ -5,8 +5,9 @@ import { Message } from 'src/app/_models/message';
 import { AuthService } from 'src/app/_services/auth.service';
 import { AlertifyService } from 'src/app/_services/alertify.service';
 import { Router } from '@angular/router';
-import { ActivatedRoute } from '@angular/router/src/router_state';
+
 import { error } from 'util';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-messages',
@@ -17,7 +18,7 @@ export class MessagesComponent implements OnInit {
   messages: Message[];
   pagination: Pagination;
   messageContainer = 'Unread';
-  constructor(public authService: AuthService, private userService: UserService, private alertifyService: AlertifyService, 
+  constructor(public authService: AuthService, private userService: UserService, private alertifyService: AlertifyService,
     private route: ActivatedRoute) { }
 
   ngOnInit() {
@@ -26,15 +27,16 @@ export class MessagesComponent implements OnInit {
       this.pagination = data['messages'].pagination;
     });
   }
-  loadMessages(){
+  loadMessages() {
     this.userService.getMessages(this.authService.decodedToken.nameid, this.pagination.currentPage,
                    this.pagination.itemsPerPage, this.messageContainer)
-                   .subscribe((res:PaginatedResult<Message[]>) =>{
+                   .subscribe((res: PaginatedResult<Message[]>) => {
                      this.messages = res.result;
                      this.pagination = res.pagination;
+                   // tslint:disable-next-line:no-shadowed-variable
                    }, error => {
                      this.alertifyService.error(error);
-                   })
+                   });
   }
   pageChanged(event: any) {
     this.pagination.currentPage = event.page;

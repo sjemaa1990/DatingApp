@@ -86,7 +86,7 @@ constructor(private http: HttpClient) { }
       params = params.append('pageNumber', page);
       params = params.append('pageSize', itemPerPage);
     }
-    return this.http.get<Message[]>(this.baseUrl + 'users/' + id +'/messages',{observe: 'response', params })
+    return this.http.get<Message[]>(this.baseUrl + 'users/' + id + '/message', {observe: 'response', params })
     .pipe(
       map( response => {
         paginatedResult.result = response.body;
@@ -97,6 +97,12 @@ constructor(private http: HttpClient) { }
       }
 
       )
-    )
+    );
+  }
+  getMessageThread (id: number, recipientId: number) {
+    return this.http.get<Message[]>(this.baseUrl + 'users/' + id + '/message/thread/' + recipientId);
+  }
+  sendMessage (id: number, message: Message) {
+    return this.http.post(this.baseUrl + 'users/' + id + '/message', message);
   }
 }
