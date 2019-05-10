@@ -110,13 +110,17 @@ namespace SGS.eCalc.Repository
                                                     .AsQueryable();
             switch(messageParams.MessageContainer){
                 case "Inbox":
-                        messages = messages.Where(m => m.RecipientId == messageParams.UserId);
+                        messages = messages.Where(m => m.RecipientId == messageParams.UserId 
+                                                        && m.RecipientDeleted == false);
                         break;
                 case "Outbox": 
-                        messages = messages.Where(u => u.SenderId == messageParams.UserId);
+                        messages = messages.Where(u => u.SenderId == messageParams.UserId 
+                                                    && u.SenderDeleted == false);
                         break;
                 default:
-                        messages = messages.Where(u => u.RecipientId == messageParams.UserId && u.IsRead == false);
+                        messages = messages.Where(u => u.RecipientId == messageParams.UserId 
+                                                    && u.IsRead == false 
+                                                    && u.RecipientDeleted == false);
                         break;
 
             }
@@ -128,9 +132,9 @@ namespace SGS.eCalc.Repository
         {
             var messages =  await _context.Messages.Include(u => u.Sender).ThenInclude(p => p.Photos)
                                                     .Include(u => u.Recipient).ThenInclude(p=> p.Photos)
-                                                    .Where(m => m.RecipientId == userId && m.SenderId == recipientId 
-                                                    || m.RecipientId == recipientId && m.SenderId ==userId)
-                                                    .OrderByDescending(x=>x.MessageSent)
+                                                    .Where(m => m.RecipientId == userId && m.RecipientDeleted == false&&  m.SenderId == recipientId 
+                                                    || m.RecipientId == recipientId && m.SenderId ==userId && m.SenderDeleted == false)
+                                                    .OrderByDescending(x => x.MessageSent)
                                                     .ToListAsync();
 
             return messages;                               

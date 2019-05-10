@@ -38,6 +38,18 @@ export class MessagesComponent implements OnInit {
                      this.alertifyService.error(error);
                    });
   }
+  deleteMessage(id: number) {
+    this.alertifyService.confirm('Are you sure you want to delete this message', () => {
+      // () =>  anonymos function because there are no back result
+      this.userService.deleteMessage(id, this.authService.decodedToken.nameid).subscribe(() => {
+        this.messages.splice(this.messages.findIndex(m => m.id === id), 1);
+        this.alertifyService.success('Message has been deleted successfully');
+        // tslint:disable-next-line:no-shadowed-variable
+        }, error => {
+          this.alertifyService.error('Error appears when deleting message');
+        });
+    });
+  }
   pageChanged(event: any) {
     this.pagination.currentPage = event.page;
     this.loadMessages();
