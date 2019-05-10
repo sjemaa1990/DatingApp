@@ -59,6 +59,31 @@ namespace SGS.eCalc.API
             services.AddScoped<LogUserActivity>();
         }
 
+        // public void ConfigureDevelopmentServices(IServiceCollection services)
+        // {
+        //     services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("SGS.eCalc.DevDB")));
+        //     services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+        //     .AddJsonOptions(opt => {
+        //         opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+        //     });
+        //     services.AddCors();
+        //     services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
+        //     services.AddAutoMapper();
+        //     services.AddTransient<Seed>();
+        //     services.AddScoped<IAuthRepository,AuthRepository>();
+        //     services.AddScoped<IDatingRepository,DatingRepository>();
+        //     services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(Options => {
+        //         Options.TokenValidationParameters = new TokenValidationParameters(){
+        //             ValidateIssuerSigningKey = true,
+        //             IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:token").Value)),
+        //             ValidateIssuer = false,
+        //             ValidateAudience = false 
+        //         };
+        //     });
+        //     services.AddScoped<LogUserActivity>();
+        // }
+
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, Seed seeder)
         {
@@ -88,7 +113,17 @@ namespace SGS.eCalc.API
             //seeder.SeedUsers();
             app.UseCors(x =>x.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
             app.UseAuthentication();
-            app.UseMvc();
+            // to use any default file index.html ,or default.html ... 
+            app.UseDefaultFiles();
+            //For publishing and using angular static files enabled
+            app.UseStaticFiles();
+            // tell .net core mvc what to do with route who doesn't know
+            app.UseMvc(routes => {
+                routes.MapSpaFallbackRoute(
+                    name: "spa-fallback",
+                    defaults: new {controller = "fallback", action = "index"}
+                );
+            });
         }
         
     }
